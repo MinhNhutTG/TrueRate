@@ -7,11 +7,7 @@ block content
       .pd-hero__img
         img(src=product.image, alt=product.name)
       .pd-hero__info
-        .pd-badge
-          svg(width="12" height="12" viewBox="0 0 12 12" fill="none")
-            circle(cx="6" cy="6" r="5" stroke="#2d31fc" stroke-width="1.5")
-            path(d="M4 6l1.5 1.5L8 4" stroke="#2d31fc" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round")
-          span Đã xác thực Blockchain
+        
         h1.pd-title= product.name
         p.pd-id ID: #{product._id}
         .pd-price
@@ -24,7 +20,7 @@ block content
             path(d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round")
             line(x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round")
             path(d="M16 10a4 4 0 01-8 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round")
-        p.pd-sc-note Giao dịch được bảo vệ bởi Smart Contract
+        
 
     //- ── REVIEWS SECTION ──
     .pd-reviews
@@ -144,7 +140,7 @@ block scripts
     }
 
     btnGui.addEventListener('click', function() {
-      var content = document.getElementById'reviewContent').value.trim()
+      var content = document.getElementById('reviewContent').value.trim()
       var rating = parseInt(ratingInput.value)
       var productId = document.getElementById('btnMuaHang').dataset.id
       alert(productId)

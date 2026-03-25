@@ -35,14 +35,14 @@ const buy = async (req, res) => {
     }
 
     const user = await User.findById(userId)
-    if (user.purchasedProducts.includes(productId)) {
-      return res.status(400).json({ success: false, message: 'Bạn đã mua sản phẩm này rồi' })
-    }
+    // if (user.purchasedProducts.includes(productId)) {
+    //   return res.status(400).json({ success: false, message: 'Bạn đã mua sản phẩm này rồi' })
+    // }
 
     await User.findByIdAndUpdate(userId, {
       $addToSet: { purchasedProducts: productId }
     })
-
+    
     return res.json({ success: true, message: 'Mua hàng thành công' })
   } catch (err) {
     console.error('[muaHang]', err)

@@ -1,0 +1,133 @@
+extends ../../layouts/default
+
+block content
+  main.flex-grow-1.d-flex.align-items-center.justify-content-center.px-4.pt-5.pb-5.position-relative.overflow-hidden
+
+    .position-absolute.top-0.start-0.w-100.h-100.opacity-25.-z-1(style="background: radial-gradient(circle at 10% 20%, var(--md-sys-color-primary-container) 0%, transparent 40%), radial-gradient(circle at 90% 80%, var(--md-sys-color-secondary-container) 0%, transparent 40%);")
+
+    .w-100.box-shadow-modify.rounded-4(style="max-width: 550px;")
+      .card.border-0.bg-surface-container-low.p-1.rounded-4.shadow-sm
+        .card-body.bg-surface-container-lowest.p-4.p-md-5.rounded-4.position-relative
+
+          a.position-absolute.top-0.end-0.m-4.p-2.text-secondary.opacity-50.hover-opacity-100.transition-all.rounded-circle.bg-hover-light.d-flex.align-items-center.justify-content-center.text-decoration-none(href="/" title="Quay lại trang chủ")
+            span.material-symbols-outlined.fs-5 close
+
+          header.mb-5.text-center
+            h1.font-headline.h2.fw-black.text-dark.mb-2.tracking-tight Tạo tài khoản mới
+            p.text-secondary.opacity-75.fs-7.mb-0 Tham gia cộng đồng đánh giá Blockchain minh bạch nhất.
+
+          #registerAlert.alert.alert-danger.rounded-3.py-2.px-3.fs-7.d-none(role="alert")
+
+          form#registerForm.vstack.gap-4
+
+            div
+              label.form-label.fw-bold.text-secondary.opacity-75.fs-8.mb-2.px-1(for="fullName") Họ tên
+              .input-group
+                span.input-group-text.bg-surface-container-high.border-0.rounded-start-3.px-3
+                  span.material-symbols-outlined.fs-5.text-secondary.opacity-50 person
+                input#fullName.form-control.border-0.bg-surface-container-high.rounded-end-3.py-3.px-3.text-dark.focus-ring-primary.shadow-none(
+                  type="text" name="fullName" placeholder="Nhập họ tên của bạn" required
+                )
+
+            div
+              label.form-label.fw-bold.text-secondary.opacity-75.fs-8.mb-2.px-1(for="email") Email
+              .input-group
+                span.input-group-text.bg-surface-container-high.border-0.rounded-start-3.px-3
+                  span.material-symbols-outlined.fs-5.text-secondary.opacity-50 mail
+                input#email.form-control.border-0.bg-surface-container-high.rounded-end-3.py-3.px-3.text-dark.focus-ring-primary.shadow-none(
+                  type="email" name="email" placeholder="Nhập email của bạn" required
+                )
+
+            .row.g-3
+              .col-md-6
+                label.form-label.fw-bold.text-secondary.opacity-75.fs-8.mb-2.px-1(for="password") Mật khẩu
+                .input-group
+                  span.input-group-text.bg-surface-container-high.border-0.rounded-start-3.px-3
+                    span.material-symbols-outlined.fs-5.text-secondary.opacity-50 lock
+                  input#password.form-control.border-0.bg-surface-container-high.rounded-end-3.py-3.px-3.text-dark.focus-ring-primary.shadow-none(
+                    type="password" name="password" placeholder="••••••••" required
+                  )
+              .col-md-6
+                label.form-label.fw-bold.text-secondary.opacity-75.fs-8.mb-2.px-1(for="confirmPassword") Xác nhận
+                .input-group
+                  span.input-group-text.bg-surface-container-high.border-0.rounded-start-3.px-3
+                    span.material-symbols-outlined.fs-5.text-secondary.opacity-50 verified_user
+                  input#confirmPassword.form-control.border-0.bg-surface-container-high.rounded-end-3.py-3.px-3.text-dark.focus-ring-primary.shadow-none(
+                    type="password" name="confirmPassword" placeholder="••••••••" required
+                  )
+
+            .pt-2
+              button#submitBtn.btn.btn-primary.btn-lg.w-100.py-3.rounded-pill.fw-bold.shadow-md.hover-scale(type="submit")
+                span#submitText Đăng ký ngay
+
+          .mt-4.pt-4.border-top.border-light.text-center
+            p.text-secondary.opacity-75.fs-7.mb-0
+              | Đã có tài khoản?&nbsp;
+              a.text-primary.fw-bold.text-decoration-none.hover-underline(href="/login") Đăng nhập
+
+          .mt-4.d-flex.justify-content-center.align-items-center.gap-2.text-secondary.opacity-50
+            span.material-symbols-outlined.fs-6(style="font-variation-settings: 'FILL' 1;") verified
+            span.fs-9.fw-bold.text-uppercase.tracking-widest Dữ liệu được bảo mật trên Blockchain
+
+block scripts
+  script.
+    const form = document.getElementById('registerForm')
+    const alertBox = document.getElementById('registerAlert')
+    const submitBtn = document.getElementById('submitBtn')
+    const submitText = document.getElementById('submitText')
+
+    function showError(msg) {
+      alertBox.textContent = msg
+      alertBox.classList.remove('d-none')
+      alertBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }
+
+    function hideError() {
+      alertBox.classList.add('d-none')
+    }
+
+    function setLoading(loading) {
+      submitBtn.disabled = loading
+      submitText.textContent = loading ? 'Đang tạo tài khoản...' : 'Đăng ký ngay'
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault()
+      hideError()
+
+      const fullName = document.getElementById('fullName').value.trim()
+      const email = document.getElementById('email').value.trim()
+      const password = document.getElementById('password').value
+      const confirmPassword = document.getElementById('confirmPassword').value
+
+      if (!fullName || !email || !password || !confirmPassword) {
+        return showError('Vui lòng điền đầy đủ thông tin')
+      }
+      if (password.length < 6) {
+        return showError('Mật khẩu tối thiểu 6 ký tự')
+      }
+      if (password !== confirmPassword) {
+        return showError('Mật khẩu xác nhận không khớp')
+      }
+
+      setLoading(true)
+
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fullName, email, password, confirmPassword }),
+        })
+        const data = await res.json()
+
+        if (data.success) {
+          window.location.href = '/'
+        } else {
+          showError(data.message || 'Đăng ký thất bại, vui lòng thử lại')
+          setLoading(false)
+        }
+      } catch {
+        showError('Lỗi kết nối, vui lòng thử lại')
+        setLoading(false)
+      }
+    })

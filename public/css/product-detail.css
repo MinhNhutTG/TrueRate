@@ -1,0 +1,442 @@
+/* ============================================
+   Product Detail Page — Full Redesign
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap');
+
+/* ── Variables ── */
+:root {
+  --accent: #2d31fc;
+  --accent-dark: #1a1ec7;
+  --bg-page: #f0f2f7;
+  --bg-card: #ffffff;
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --border: #e5e7eb;
+  --radius-card: 1.25rem;
+  --radius-pill: 999px;
+}
+
+/* ── Reset & Base ── */
+body {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+}
+
+/* ── Page Wrapper ── */
+.pd-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+/* ════════════════════════════════
+   HERO — Product + Info
+════════════════════════════════ */
+.pd-hero {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 3rem;
+  align-items: start;
+  margin-bottom: 3.5rem;
+}
+
+/* ── Image ── */
+.pd-hero__img {
+  border-radius: 1.25rem;
+  overflow: hidden;
+  aspect-ratio: 4/3;
+  background: #1a1a2e;
+}
+
+.pd-hero__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.pd-hero__img:hover img {
+  transform: scale(1.04);
+}
+
+/* ── Info ── */
+.pd-hero__info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 0.25rem;
+}
+
+/* Badge */
+.pd-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 0.35rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #374151;
+  width: fit-content;
+}
+
+/* Title */
+.pd-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+/* ID */
+.pd-id {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+/* Price */
+.pd-price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+}
+
+.pd-price__current {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: -0.03em;
+}
+
+.pd-price__original {
+  font-size: 1rem;
+  color: var(--text-muted);
+  text-decoration: line-through;
+  font-weight: 400;
+}
+
+/* Description */
+.pd-desc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  font-style: italic;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* CTA Button */
+.pd-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background-color: var(--accent);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: var(--radius-pill);
+  padding: 0.95rem 1.5rem;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  margin-top: 0.5rem;
+}
+
+.pd-cta:hover {
+  background-color: var(--accent-dark);
+  color: #fff;
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+/* SC Note */
+.pd-sc-note {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin: 0;
+}
+
+/* ════════════════════════════════
+   REVIEWS SECTION
+════════════════════════════════ */
+.pd-reviews {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* ── Review Form ── */
+.pd-reviews__form {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.pd-reviews__form h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.pd-form-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.pd-stars {
+  display: flex;
+  gap: 4px;
+  margin-top: -0.25rem;
+}
+
+.pd-reviews__form textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 0.7rem 0.9rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  resize: none;
+  transition: border-color 0.2s;
+  background: #fafafa;
+  box-sizing: border-box;
+}
+
+.pd-reviews__form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(45, 49, 252, 0.08);
+}
+
+.pd-form-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: #111827;
+  color: #fff;
+  border: none;
+  border-radius: 0.75rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.15s;
+}
+
+.pd-form-btn:hover {
+  background: #374151;
+  transform: translateY(-1px);
+}
+
+/* ── Reviews List ── */
+.pd-reviews__list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pd-reviews__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.pd-reviews__header h2 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.pd-transparent-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* ── Review Card ── */
+.pd-review-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 1.25rem 1.5rem;
+  transition: border-color 0.2s;
+}
+
+.pd-review-card:hover {
+  border-color: #d1d5db;
+}
+
+.pd-review-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.85rem;
+}
+
+.pd-reviewer {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.pd-reviewer__avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #eef2ff;
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pd-reviewer__meta strong {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.pd-reviewer__meta span {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-family: 'Courier New', monospace;
+}
+
+.pd-review-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.pd-review-card__text {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin: 0 0 1rem;
+}
+
+/* Highlighted links within review text */
+.pd-review-card__text a,
+.pd-review-link {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.pd-review-card__footer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.pd-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  border-radius: var(--radius-pill);
+  padding: 0.3rem 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #3730a3;
+}
+
+.pd-tx {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #f9fafb;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.72rem;
+  font-family: 'Courier New', monospace;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.pd-tx:hover {
+  background: #f3f4f6;
+}
+
+/* Load More */
+.pd-load-more {
+  display: block;
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 0.75rem;
+  transition: opacity 0.2s;
+}
+
+.pd-load-more:hover {
+  opacity: 0.75;
+  text-decoration: none;
+  color: var(--accent);
+}
+
+/* ════════════════════════════════
+   RESPONSIVE
+════════════════════════════════ */
+@media (max-width: 900px) {
+  .pd-hero {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .pd-reviews {
+    grid-template-columns: 1fr;
+  }
+
+  .pd-title {
+    font-size: 1.6rem;
+  }
+
+  .pd-price__current {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .pd-page {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .pd-reviews__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}

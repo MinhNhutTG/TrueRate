@@ -1,0 +1,64 @@
+nav.fixed-top.w-100.glass-nav.shadow-sm
+  .container.d-flex.justify-content-between.align-items-center.px-4.py-3
+    //- Left
+    .d-flex.align-items-center.gap-4
+      a.text-2xl.font-black.tracking-tight.text-primary.font-headline.text-decoration-none(href="/") BlockRate
+      .d-none.d-md-flex.align-items-center.gap-4
+        a.text-primary.font-bold.border-bottom.border-2.border-primary.font-headline.fs-7.text-decoration-none(href="/home") Trang chủ
+        a.text-secondary.font-headline.fs-7.text-decoration-none.opacity-75(href="/products") Khám phá
+        a.text-secondary.font-headline.fs-7.text-decoration-none.opacity-75(href="/reviews") Đánh giá
+
+    //- Right
+    .d-flex.align-items-center.gap-3
+      if currentUser
+        .d-flex.align-items-center.gap-3
+          a.text-secondary.font-headline.fs-7.opacity-75.text-decoration-none(href="/profile/purchased-list") #{currentUser.fullName}
+          button#logoutBtn.px-3.py-2.text-danger.font-headline.fs-7.rounded-pill.border-0.bg-transparent.cursor-pointer Đăng xuất
+      else
+        a.px-3.py-2.text-secondary.font-headline.fs-7.text-decoration-none.rounded-pill(href="/login") Đăng nhập
+        a.px-4.py-2.bg-primary.text-white.font-headline.fs-7.font-bold.rounded-pill.text-decoration-none.shadow-md(href="/register") Đăng ký
+
+      button#mobile-menu-btn.d-md-none.p-2.text-secondary.border-0.bg-transparent.rounded-circle
+        span.material-symbols-outlined menu
+
+  //- Mobile Menu
+  #mobile-menu.d-none.d-md-none.position-absolute.top-100.start-0.w-100.bg-white.shadow-lg.border-top.p-4
+    a.d-block.text-secondary.font-bold.text-decoration-none(href="/home") Trang chủ
+    a.d-block.text-secondary.font-medium.text-decoration-none(href="/products") Khám phá
+    a.d-block.text-secondary.font-medium.text-decoration-none(href="/reviews") Đánh giá
+    hr.my-3
+    if currentUser
+      .d-flex.align-items-center.justify-content-between
+        span.text-secondary.font-bold #{currentUser.fullName}
+        button#logoutBtnMobile.text-danger.font-bold.border-0.bg-transparent Đăng xuất
+    else
+      a.d-block.text-primary.font-bold.text-decoration-none(href="/login") Đăng nhập
+      a.d-block.text-primary.font-bold.text-decoration-none.bg-primary(href="/register") Đăng ký
+
+script.
+  // Logout desktop
+  const logoutBtn = document.getElementById('logoutBtn')
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+      await fetch('/api/auth/logout', { method: 'POST' })
+      window.location.href = '/'
+    })
+  }
+
+  // Logout mobile
+  const logoutBtnMobile = document.getElementById('logoutBtnMobile')
+  if (logoutBtnMobile) {
+    logoutBtnMobile.addEventListener('click', async () => {
+      await fetch('/api/auth/logout', { method: 'POST' })
+      window.location.href = '/'
+    })
+  }
+
+  // Mobile menu toggle
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn')
+  const mobileMenu = document.getElementById('mobile-menu')
+  if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('d-none')
+    })
+  }

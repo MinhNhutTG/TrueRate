@@ -1,0 +1,108 @@
+extends ../../layouts/default
+
+block content
+  main.flex-grow-1.d-flex.align-items-center.justify-content-center.px-4.pt-5.pb-5
+    .w-100(style="max-width: 450px;")
+      .card.border-0.bg-surface-container-low.p-4.p-md-5.rounded-4.position-relative.box-shadow-modify
+
+        //- Close button
+        a.position-absolute.top-0.end-0.m-4.p-2.text-secondary.opacity-50.rounded-circle.d-flex.align-items-center.justify-content-center.text-decoration-none(href="/" title="Quay lại trang chủ")
+          span.material-symbols-outlined.fs-5 close
+
+        //- Header
+        .text-center.mb-5
+          h1.font-headline.h2.fw-black.text-dark.mb-2.tracking-tight Chào mừng trở lại
+          p.text-secondary.opacity-75.fs-7.mb-0 Truy cập vào hệ thống đánh giá Blockchain minh bạch.
+
+        //- Alert lỗi
+        #loginAlert.alert.alert-danger.rounded-3.py-2.px-3.fs-7.d-none(role="alert")
+
+        //- Form
+        form#loginForm.vstack.gap-4
+
+          //- Email
+          div
+            .d-flex.justify-content-start.align-items-center.mb-2
+              label.form-label.fw-bold.text-secondary.opacity-75.text-uppercase.tracking-widest.mb-0(for="email") Email
+            input#email.form-control.border-0.bg-surface-container-high.rounded-3.px-4.text-dark.focus-ring-primary.shadow-none(
+              type="email"
+              name="email"
+              placeholder="Nhập email của bạn"
+              required
+            )
+
+          //- Password
+          div
+            .d-flex.justify-content-between.align-items-center.mb-2
+              label.form-label.fw-bold.text-secondary.opacity-75.text-uppercase.tracking-widest.mb-0(for="password") Mật khẩu
+              a.fs-9.fw-bold.text-primary.text-decoration-none(href="#") Quên mật khẩu?
+            input#password.form-control.border-0.bg-surface-container-high.rounded-3.px-4.text-dark.focus-ring-primary.shadow-none(
+              type="password"
+              name="password"
+              placeholder="••••••••"
+              required
+            )
+
+          //- Submit
+          button#submitBtn.btn.btn-primary.btn-lg.w-100.py-3.rounded-pill.fw-bold.shadow-md.mt-2(type="submit")
+            span#submitText Đăng nhập
+
+        //- Signup link
+        .mt-5.text-center
+          p.text-secondary.opacity-75.fs-7.mb-0
+            | Chưa có tài khoản?&nbsp;
+            a.text-primary.fw-bold.text-decoration-none(href="/register") Đăng ký ngay
+
+        //- Trust badge
+        .mt-4.d-flex.align-items-center.justify-content-center.gap-2.text-secondary.opacity-50
+          span.material-symbols-outlined.fs-6(style="font-variation-settings: 'FILL' 1;") shield_with_heart
+          span.fs-9.fw-medium Bảo mật bởi hạ tầng Blockchain phi tập trung
+
+block scripts
+  script.
+    const form = document.getElementById('loginForm')
+    const alertBox = document.getElementById('loginAlert')
+    const submitBtn = document.getElementById('submitBtn')
+    const submitText = document.getElementById('submitText')
+
+    function showError(msg) {
+      alertBox.textContent = msg
+      alertBox.classList.remove('d-none')
+    }
+
+    function hideError() {
+      alertBox.classList.add('d-none')
+    }
+
+    function setLoading(loading) {
+      submitBtn.disabled = loading
+      submitText.textContent = loading ? 'Đang đăng nhập...' : 'Đăng nhập'
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault()
+      hideError()
+      setLoading(true)
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: document.getElementById('email').value.trim(),
+            password: document.getElementById('password').value,
+          }),
+        })
+        const data = await res.json()
+
+        if (data.success) {
+          window.location.href = '/'
+        } else {
+          showError(data.message || 'Email hoặc mật khẩu không đúng')
+          setLoading(false)
+        }
+      } catch {
+        showError('Lỗi kết nối, vui lòng thử lại')
+        setLoading(false)
+      }
+    })

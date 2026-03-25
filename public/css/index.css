@@ -1,0 +1,40 @@
+/* ---------------- Index / Home Page ---------------- */
+
+/* Hero Gradient */
+.hero-gradient {
+    background-image: radial-gradient(circle at 2px 2px, #2D31FC 1px, transparent 0);
+    background-size: 40px 40px;
+}
+
+/* Product Card */
+.product-card .card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+.product-card .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* Image zoom hover */
+.product-card img {
+    transition: transform 0.4s ease;
+}
+.product-card:hover img {
+    transform: scale(1.05);
+}
+
+/* Product Card Title */
+.product-card h3 { line-height: 1.4; }
+
+/* Price nổi bật */
+.product-card .price { color: var(--bs-primary); }
+
+/* Rating màu chuẩn */
+.text-warning { color: #f59e0b !important; }
+
+/* Spacing Index page */
+.pt-24 { padding-top: 6rem !important; }
+.pb-20 { padding-bottom: 5rem !important; }
+.mb-20 { margin-bottom: 5rem !important; }
+.mb-12 { margin-bottom: 3rem !important; }

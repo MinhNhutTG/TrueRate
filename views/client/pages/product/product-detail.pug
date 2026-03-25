@@ -1,0 +1,180 @@
+extends ../../layouts/default
+
+block content
+  .pd-page
+    //- ── HERO SECTION ──
+    .pd-hero
+      .pd-hero__img
+        img(src=product.image, alt=product.name)
+      .pd-hero__info
+        .pd-badge
+          svg(width="12" height="12" viewBox="0 0 12 12" fill="none")
+            circle(cx="6" cy="6" r="5" stroke="#2d31fc" stroke-width="1.5")
+            path(d="M4 6l1.5 1.5L8 4" stroke="#2d31fc" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round")
+          span Đã xác thực Blockchain
+        h1.pd-title= product.name
+        p.pd-id ID: #{product._id}
+        .pd-price
+          span.pd-price__current= product.price.toLocaleString('vi-VN') + 'đ'
+          span.pd-price__original 5.100.000đ
+        blockquote.pd-desc= product.description
+        button.pd-cta#btnMuaHang(data-id=product._id.toString())
+          | Mua hàng
+          svg(width="18" height="18" viewBox="0 0 24 24" fill="none")
+            path(d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round")
+            line(x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round")
+            path(d="M16 10a4 4 0 01-8 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round")
+        p.pd-sc-note Giao dịch được bảo vệ bởi Smart Contract
+
+    //- ── REVIEWS SECTION ──
+    .pd-reviews
+      //- Form
+      .pd-reviews__form
+        h3 Gửi đánh giá
+        p.pd-form-label Xếp hạng
+        .pd-stars#starRating
+          - for (let i = 1; i <= 5; i++)
+            svg.star-btn(width="20" height="20" viewBox="0 0 24 24" data-value=i style="cursor:pointer")
+              path(d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill= i <= 4 ? "#f59e0b" : "none" stroke="#f59e0b" stroke-width="1.5")
+        input#ratingValue(type="hidden" value="4")
+        p.pd-form-label Nhận xét của bạn
+        textarea#reviewContent(rows="4" placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này...")
+        #reviewAlert.alert.alert-danger.rounded-3.py-2.px-3.fs-7.d-none(role="alert")
+        button#btnGuiDanhGia.pd-form-btn Gửi đánh giá
+
+      //- Reviews List
+      .pd-reviews__list
+        .pd-reviews__header
+          h2 Đánh giá từ cộng đồng
+          .pd-transparent-badge
+            svg(width="14" height="14" viewBox="0 0 24 24" fill="none")
+              circle(cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5")
+              path(d="M12 8v4l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round")
+            span 100% Minh bạch
+
+        each review in reviews
+          .pd-review-card
+            .pd-review-card__top
+              .pd-reviewer  
+                .pd-reviewer__avatar NH
+                .pd-reviewer__meta
+                  strong= review.user.fullName || 'Người dùng ẩn danh'
+                  span= review.wallet || '0x71C...4f2D'
+              .pd-review-stars
+                - for (let i = 1; i <= review.rating; i++)
+                  svg(width="14" height="14" viewBox="0 0 24 24")
+                    path(d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#f59e0b" stroke="#f59e0b" stroke-width="1")
+            p.pd-review-card__text= review.content || 'Không có nhận xét nào.'
+            .pd-review-card__footer
+              .pd-verified
+                svg(width="12" height="12" viewBox="0 0 24 24" fill="none")
+                  circle(cx="12" cy="12" r="10" stroke="#2d31fc" stroke-width="1.5")
+                  path(d="M8 12l3 3 5-5" stroke="#2d31fc" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round")
+                span Xác thực Blockchain
+              .pd-tx
+                span Tx: #{review.tx || '0xb4e1...f89c02'}
+                svg(width="12" height="12" viewBox="0 0 24 24" fill="none")
+                  rect(x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" stroke-width="1.5")
+                  path(d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="currentColor" stroke-width="1.5")
+
+        a.pd-load-more(href="#") Xem thêm 12 đánh giá khác
+
+block scripts
+  script.
+    const btn = document.getElementById('btnMuaHang')
+    if (btn) {
+      btn.addEventListener('click', async () => {
+        const productId = btn.dataset.id
+        btn.disabled = true
+        btn.textContent = 'Đang xử lý...'
+
+        try {
+          const res = await fetch(`/product/buy/${productId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+          })
+          const data = await res.json()
+
+          if (data.success) {
+            btn.textContent = '✓ Đã mua'
+            btn.style.opacity = '0.6'
+          } else if (res.status === 401) {
+            window.location.href = '/login'
+          } else {
+            alert(data.message)
+            btn.disabled = false
+            btn.textContent = 'Mua hàng'
+          }
+        } catch {
+          alert('Lỗi kết nối, vui lòng thử lại')
+          btn.disabled = false
+          btn.textContent = 'Mua hàng'
+        }
+      })
+    }
+
+
+    var selectedRating = 4
+    var stars = document.querySelectorAll('.star-btn')
+    var ratingInput = document.getElementById('ratingValue')
+
+    function renderStars(rating) {
+      stars.forEach(function(star) {
+        var val = parseInt(star.dataset.value)
+        star.querySelector('path').setAttribute('fill', val <= rating ? '#f59e0b' : 'none')
+      })
+    }
+
+    stars.forEach(function(star) {
+      star.addEventListener('mouseover', function() { renderStars(parseInt(star.dataset.value)) })
+      star.addEventListener('mouseleave', function() { renderStars(selectedRating) })
+      star.addEventListener('click', function() {
+        selectedRating = parseInt(star.dataset.value)
+        ratingInput.value = selectedRating
+        renderStars(selectedRating)
+      })
+    })
+
+    var btnGui = document.getElementById('btnGuiDanhGia')
+    var reviewAlert = document.getElementById('reviewAlert')
+
+    function showAlert(msg) {
+      reviewAlert.textContent = msg
+      reviewAlert.classList.remove('d-none')
+    }
+
+    btnGui.addEventListener('click', function() {
+      var content = document.getElementById'reviewContent').value.trim()
+      var rating = parseInt(ratingInput.value)
+      var productId = document.getElementById('btnMuaHang').dataset.id
+      alert(productId)
+      if (!content) return showAlert('Vui lòng nhập nội dung đánh giá')
+      if (content.length < 10) return showAlert('Nội dung tối thiểu 10 ký tự')
+
+      btnGui.disabled = true
+      btnGui.textContent = 'Đang gửi...'
+      reviewAlert.classList.add('d-none')
+
+      fetch('/product/review/'+ productId, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rating: rating, content: content })
+      })
+      .then(function(res) { return res.json().then(function(data) { return { res: res, data: data } }) })
+      .then(function(obj) {
+        if (obj.data.success) {
+          window.location.reload()
+        } else if (obj.res.status === 401) {
+          window.location.href = '/login'
+        } else {
+          showAlert(obj.data.message)
+          btnGui.disabled = false
+          btnGui.textContent = 'Gửi đánh giá'
+        }
+      })
+      .catch(function() {
+        showAlert('Lỗi kết nối, vui lòng thử lại')
+        btnGui.disabled = false
+        btnGui.textContent = 'Gửi đánh giá'
+      })
+    })

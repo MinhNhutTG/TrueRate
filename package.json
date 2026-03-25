@@ -1,0 +1,35 @@
+{
+  "name": "blockrate",
+  "version": "1.0.0",
+  "description": "Tài liệu này liệt kê các sản phẩm hiện có trong mockup giao diện (HTML) của dự án BlockRate nhưng chưa có hình ảnh thực tế. Các hình ảnh này hiện đang được thay thế bằng các Placeholder (biểu tượng Material Icons).",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DHK-jv/BlockRate.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/DHK-jv/BlockRate/issues"
+  },
+  "homepage": "https://github.com/DHK-jv/BlockRate#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb": "^7.1.0",
+    "mongoose": "^9.3.2",
+    "pug": "^3.0.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

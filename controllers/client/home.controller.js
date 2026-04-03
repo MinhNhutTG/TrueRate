@@ -1,7 +1,7 @@
 const productModel = require("../../models/product.model");
 const getHomePage = async (req, res) => {
     try {
-        console.log('[getHomePage] query:', req.query)
+        
         const { category } = req.query
         
         const filter = category && category !== 'all' ? { category } : {}

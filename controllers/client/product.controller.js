@@ -3,6 +3,7 @@ const { model } = require("mongoose");
 const Product = require("../../models/product.model");
 const User = require("../../models/user.model");
 const Review = require("../../models/review.model");
+const Order = require("../../models/order.model");
 
 const detail = async (req, res) => {
   try {
@@ -34,10 +35,14 @@ const buy = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Sản phẩm không tồn tại' })
     }
 
-    const user = await User.findById(userId)
-    // if (user.purchasedProducts.includes(productId)) {
-    //   return res.status(400).json({ success: false, message: 'Bạn đã mua sản phẩm này rồi' })
-    // }
+    const order = await Order.create({
+      userId,
+      productId,
+      price: product.price,
+      status: 'completed',
+      // txHash: txHash || null,
+    })
+
 
     await User.findByIdAndUpdate(userId, {
       $addToSet: { purchasedProducts: productId }

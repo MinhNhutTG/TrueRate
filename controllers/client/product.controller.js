@@ -83,12 +83,10 @@ const review = async (req, res) => {
     const productId = req.params.id
     const userId = req.user._id
 
-
     // Validate
     if (!rating || !content) {
       return res.status(400).json({ success: false, message: 'Vui lòng nhập đầy đủ thông tin' })
     }
-
 
     const order = await Order.findOne({
       userId: userId,
@@ -96,8 +94,6 @@ const review = async (req, res) => {
       status: 'completed',
       reviewStatus: 'pending'
     });
-
-    console.log('order:', order)
 
     if (!order) {
       return res.status(403).json({
@@ -122,11 +118,17 @@ const review = async (req, res) => {
     );
 
 
+    console.log('Hash duoc tao:', hash)
+
+
+
     const tx = await contract.submitReview(
       order._id.toString(),
       productId.toString(),
       hash
     );
+
+    console.log('hash dc tao trong block chain  :', tx.hash)
 
     await tx.wait();
 

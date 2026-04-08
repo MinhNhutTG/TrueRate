@@ -440,3 +440,102 @@ body {
     gap: 0.5rem;
   }
 }
+
+.pd-tx {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.pd-tx-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: #f1f3ff;
+  color: #2d31fc;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.pd-tx-link:hover {
+  background: #e0e4ff;
+  transform: translateY(-1px);
+}
+
+.pd-tx-text {
+  font-family: monospace;
+  letter-spacing: 0.5px;
+}
+
+.copy-btn {
+  border: none;
+  background: #f5f5f5;
+  border-radius: 6px;
+  padding: 4px 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.copy-btn:hover {
+  background: #e0e0e0;
+}
+
+.pd-tx-na {
+  color: #999;
+  font-style: italic;
+}
+
+/* Avatar xanh lá */
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #16a34a, #22c55e); /* GREEN */
+  color: white;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+/* Tên user xanh lá */
+.user-name {
+  font-weight: 600;
+  color: #14863e; /* GREEN MAIN */
+  font-size: 14px;
+}
+.user-menu{
+  border-radius: 8px;
+}
+/* Hover nhẹ */
+.user-menu:hover {
+  background: rgba(34, 201, 95, 0.219);
+}
+
+.user-logout {
+  border: none;
+  outline: none;  
+  background: transparent;
+}
+
+/* Logout hover cũng đồng bộ */
+.user-logout:hover {
+  border-radius: 8px;
+  background: #ecfdf5;
+  color: #16a34a;
+}
+
+.text-success {
+  color: #16a34a; /* xanh lá */
+  font-weight: 500;
+}
+
+.text-error {
+  color: #f97316; /* cam đẹp hơn orange */
+  font-weight: 500;
+}

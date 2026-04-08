@@ -1,17 +1,18 @@
-const express = require("express");
-const router = express.Router();
-const controller = require("../../controllers/client/auth.controller");
+const express = require('express')
+const router = express.Router()
+const controller = require('../../controllers/client/auth.controller')
 
-
-router.get('/login', controller.showLogin)
+// Pages
+router.get('/login',    controller.showLogin)
 router.get('/register', controller.showRegister)
 
-
-// [POST ] /api/auth/login - xử lý đăng nhập, trả token + user info
-router.post('/api/auth/login', controller.login)
-// [POST] /api/auth/register - xử lý đăng ký, trả token + user info (có thể thêm sau)
+// Email / password
+router.post('/api/auth/login',    controller.login)
 router.post('/api/auth/register', controller.register)
-// [POST] /api/auth/logout - xử lý đăng xuất (xóa cookie)
-router.post('/api/auth/logout', controller.logout)
+router.post('/api/auth/logout',   controller.logout)
 
-module.exports = router;
+// MetaMask
+router.get('/api/auth/nonce',     controller.getNonce)      // ← mới
+router.post('/api/auth/wallet',   controller.walletLogin)   // ← mới
+
+module.exports = router

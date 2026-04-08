@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-
 const bcrypt = require('bcryptjs')
 
 const userSchema = new mongoose.Schema(
@@ -11,17 +10,28 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: [true, 'Vui lòng nhập email'],
       unique: true,
+      sparse: true,          // ← cho phép nhiều user không có email
       lowercase: true,
       trim: true,
       match: [/^\S+@\S+\.\S+$/, 'Email không hợp lệ'],
     },
     password: {
       type: String,
-      required: [true, 'Vui lòng nhập mật khẩu'],
       minlength: [6, 'Mật khẩu tối thiểu 6 ký tự'],
       select: false,
+    },
+    walletAddress: {
+      type: String,
+      unique: true,
+      sparse: true,          // ← cho phép nhiều user không có ví
+      lowercase: true,
+      trim: true,
+    },
+    nonce: {
+      type: String,
+      default: null,
+      select: false,         // ← không trả ra ngoài khi query bình thường
     },
     role: {
       type: String,
@@ -42,9 +52,9 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
-// Hash password trước khi lưu
+// Hash password trước khi lưu (chỉ khi có password)
 userSchema.pre('save', async function () {
-  if (!this.isModified('password')) return
+  if (!this.isModified('password') || !this.password) return
   this.password = await bcrypt.hash(this.password, 12)
 })
 

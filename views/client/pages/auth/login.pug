@@ -14,10 +14,10 @@ block content
           h1.font-headline.h2.fw-black.text-dark.mb-2.tracking-tight Chào mừng trở lại
           p.text-secondary.opacity-75.fs-7.mb-0 Truy cập vào hệ thống đánh giá Blockchain minh bạch.
 
-        //- Alert lỗi
+        //- Alert lỗi (dùng chung cho cả 2 form)
         #loginAlert.alert.alert-danger.rounded-3.py-2.px-3.fs-7.d-none(role="alert")
 
-        //- Form
+        //- Form email/password
         form#loginForm.vstack.gap-4
 
           //- Email
@@ -43,12 +43,35 @@ block content
               required
             )
 
-          //- Submit
+          //- Submit email
           button#submitBtn.btn.btn-primary.btn-lg.w-100.py-3.rounded-pill.fw-bold.shadow-md.mt-2(type="submit")
             span#submitText Đăng nhập
 
+        //- Divider
+        .d-flex.align-items-center.gap-3.my-4
+          hr.flex-grow-1.opacity-25.m-0
+          span.text-secondary.opacity-50.fs-8.fw-medium hoặc
+          hr.flex-grow-1.opacity-25.m-0
+
+        //- Nút MetaMask
+        button#btnWallet.btn.btn-lg.w-100.py-3.rounded-pill.fw-bold.d-flex.align-items-center.justify-content-center.gap-2(
+          type="button"
+          style="background:#F6851B; color:#fff; border:none;"
+        )
+          //- Logo MetaMask inline SVG (fox icon đơn giản)
+          svg(width="22" height="22" viewBox="0 0 318 318" fill="none" xmlns="http://www.w3.org/2000/svg")
+            polygon(points="274.1,35.5 174.6,109.4 193.8,65.9" fill="#E2761B" stroke="#E2761B" stroke-linecap="round" stroke-linejoin="round")
+            polygon(points="44,35.5 142.7,110.1 124.3,65.9" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round")
+            polygon(points="238.3,206.8 211.8,247.4 268.5,263 284.8,207.7" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round")
+            polygon(points="33.4,207.7 49.6,263 106.3,247.4 79.8,206.8" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round")
+            polygon(points="103.6,138.2 87.8,162.1 144.1,164.6 142.1,104" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round")
+            polygon(points="214.5,138.2 176.1,103.3 174.6,164.6 230.8,162.1" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round")
+            polygon(points="106.3,247.4 140.6,230.9 110.8,208.1" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round")
+            polygon(points="177.5,230.9 211.8,247.4 207.3,208.1" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round")
+          span#walletText Đăng nhập bằng MetaMask
+
         //- Signup link
-        .mt-5.text-center
+        .mt-4.text-center
           p.text-secondary.opacity-75.fs-7.mb-0
             | Chưa có tài khoản?&nbsp;
             a.text-primary.fw-bold.text-decoration-none(href="/register") Đăng ký ngay
@@ -60,20 +83,19 @@ block content
 
 block scripts
   script.
-    const form = document.getElementById('loginForm')
-    const alertBox = document.getElementById('loginAlert')
-    const submitBtn = document.getElementById('submitBtn')
+    // ── EMAIL / PASSWORD ──────────────────────────────────
+    const form       = document.getElementById('loginForm')
+    const alertBox   = document.getElementById('loginAlert')
+    const submitBtn  = document.getElementById('submitBtn')
     const submitText = document.getElementById('submitText')
 
     function showError(msg) {
       alertBox.textContent = msg
       alertBox.classList.remove('d-none')
     }
-
     function hideError() {
       alertBox.classList.add('d-none')
     }
-
     function setLoading(loading) {
       submitBtn.disabled = loading
       submitText.textContent = loading ? 'Đang đăng nhập...' : 'Đăng nhập'
@@ -83,7 +105,6 @@ block scripts
       e.preventDefault()
       hideError()
       setLoading(true)
-
       try {
         const res = await fetch('/api/auth/login', {
           method: 'POST',
@@ -94,7 +115,6 @@ block scripts
           }),
         })
         const data = await res.json()
-
         if (data.success) {
           window.location.href = '/'
         } else {
@@ -104,5 +124,72 @@ block scripts
       } catch {
         showError('Lỗi kết nối, vui lòng thử lại')
         setLoading(false)
+      }
+    })
+
+    // ── METAMASK ──────────────────────────────────────────
+    const btnWallet  = document.getElementById('btnWallet')
+    const walletText = document.getElementById('walletText')
+
+    function setWalletLoading(loading) {
+      btnWallet.disabled = loading
+      walletText.textContent = loading ? 'Đang xử lý...' : 'Đăng nhập bằng MetaMask'
+    }
+
+    btnWallet.addEventListener('click', async () => {
+      hideError()
+
+      // Kiểm tra extension
+      if (!window.ethereum) {
+        showError('Vui lòng cài MetaMask extension trên trình duyệt!')
+        return
+      }
+
+      setWalletLoading(true)
+
+      try {
+        // Bước 1: Kết nối ví → MetaMask popup "Connect"
+        const [address] = await window.ethereum.request({ method: 'eth_requestAccounts' })
+
+        // Bước 2: Lấy nonce từ server
+        const nonceRes = await fetch(`/api/auth/nonce?address=${address}`)
+        const nonceData = await nonceRes.json()
+        if (!nonceData.success) {
+          showError(nonceData.message || 'Không lấy được nonce')
+          setWalletLoading(false)
+          return
+        }
+
+        // Bước 3: Ký message → MetaMask popup "Sign"
+        // Người dùng chỉ bấm Sign, KHÔNG cần nhập private key
+        const message = `Đăng nhập BlockRate\nNonce: ${nonceData.nonce}`
+        const signature = await window.ethereum.request({
+          method: 'personal_sign',
+          params: [message, address],
+        })
+
+        // Bước 4: Gửi signature lên server verify
+        const loginRes = await fetch('/api/auth/wallet', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ address, signature }),
+        })
+        const data = await loginRes.json()
+
+        if (data.success) {
+          window.location.href = '/'
+        } else {
+          showError(data.message || 'Xác thực ví thất bại')
+          setWalletLoading(false)
+        }
+      } catch (err) {
+        if (err.code === 4001) {
+          // User từ chối trong MetaMask popup
+          showError('Bạn đã huỷ xác nhận trong MetaMask.')
+        } else {
+          console.error('[MetaMask]', err)
+          showError('Có lỗi xảy ra, vui lòng thử lại.')
+        }
+        setWalletLoading(false)
       }
     })

@@ -12,13 +12,11 @@ const orderSchema = new mongoose.Schema(
       enum: ['pending', 'completed', 'cancelled'],
       default: 'pending',
     },
-    txHash: { type: String, default: null },       // hash giao dịch thanh toán
     reviewStatus: {
       type: String,
       enum: ['pending', 'reviewed'],
       default: 'pending',
     },
-
   },
   { timestamps: true }
 )

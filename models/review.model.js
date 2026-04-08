@@ -25,13 +25,23 @@ const reviewSchema = new mongoose.Schema(
       minlength: [10, 'Nội dung đánh giá tối thiểu 10 ký tự'],
       maxlength: [1000, 'Nội dung đánh giá tối đa 1000 ký tự'],
     },
+    orderID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Order',
+      required: [true, 'Review phải liên kết với một đơn hàng đã hoàn thành'],
+    },
+    txHash: {
+      type: String,
+      required: true,
+      unique: true,
+    },
   },
   {
     timestamps: true, // tự tạo createdAt, updatedAt
   }
 )
 
-// Mỗi user chỉ được review 1 lần trên 1 sản phẩm
-reviewSchema.index({ product: 1, user: 1 }, { unique: true })
+// mua lại thì review lại được ✅ mỗi order = 1 review
+reviewSchema.index({ orderID: 1 }, { unique: true })
 
 module.exports = mongoose.model('Review', reviewSchema, 'Reviews')

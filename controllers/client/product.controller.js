@@ -4,6 +4,26 @@ const Product = require("../../models/product.model");
 const User = require("../../models/user.model");
 const Review = require("../../models/review.model");
 const Order = require("../../models/order.model");
+const crypto = require('crypto')
+const { ethers } = require('ethers');
+const abi = [
+  "function submitReview(string orderId,string productId,bytes32 reviewHash) public",
+  "function hasReviewed(string orderId) view returns(bool)",
+  "function getReviewByOrder(string orderId) view returns(uint256,bytes32,address,uint256)"
+];
+const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+
+const wallet = new ethers.Wallet(
+  process.env.PRIVATE_KEY,
+  provider
+);
+
+const contract = new ethers.Contract(
+  process.env.CONTRACT_ADDRESS,
+  abi,
+  wallet
+);
+
 
 const detail = async (req, res) => {
   try {
@@ -40,14 +60,14 @@ const buy = async (req, res) => {
       productId,
       price: product.price,
       status: 'completed',
-      // txHash: txHash || null,
+
     })
 
 
     await User.findByIdAndUpdate(userId, {
       $addToSet: { purchasedProducts: productId }
     })
-    
+
     return res.json({ success: true, message: 'Mua hàng thành công' })
   } catch (err) {
     console.error('[muaHang]', err)
@@ -55,31 +75,66 @@ const buy = async (req, res) => {
   }
 }
 
+
+
 const review = async (req, res) => {
   try {
     const { rating, content } = req.body
     const productId = req.params.id
     const userId = req.user._id
 
+
     // Validate
     if (!rating || !content) {
       return res.status(400).json({ success: false, message: 'Vui lòng nhập đầy đủ thông tin' })
     }
 
-    // Kiểm tra đã mua chưa
-    const user = await User.findById(userId)
-    if (!user.purchasedProducts.includes(productId)) {
-      return res.status(403).json({ success: false, message: 'Bạn cần mua sản phẩm trước khi đánh giá' })
+
+    const order = await Order.findOne({
+      userId: userId,
+      productId: productId,
+      status: 'completed',
+      reviewStatus: 'pending'
+    });
+
+    console.log('order:', order)
+
+    if (!order) {
+      return res.status(403).json({
+        success: false,
+        message: 'Bạn chưa có đơn hàng hợp lệ để đánh giá hoặc đã đánh giá rồi'
+      });
     }
 
-    // Kiểm tra đã review chưa
-    const existed = await Review.findOne({ product: productId, user: userId })
-    if (existed) {
-      return res.status(400).json({ success: false, message: 'Bạn đã đánh giá sản phẩm này rồi' })
+    const already = await contract.hasReviewed(order._id.toString());
+
+    if (already) {
+      return res.status(400).json({
+        success: false,
+        message: 'Order đã review trên blockchain'
+      });
     }
 
-    const review = await Review.create({ product: productId, user: userId, rating, content })
+    const hash = ethers.keccak256(
+      ethers.toUtf8Bytes(
+        `${order._id}-${userId}-${content}`
+      )
+    );
+
+
+    const tx = await contract.submitReview(
+      order._id.toString(),
+      productId.toString(),
+      hash
+    );
+
+    await tx.wait();
+
+    const review = await Review.create({ product: productId, user: userId, rating, content, orderID: order._id, txHash: tx.hash })
     await review.populate('user', 'fullName')
+
+    order.reviewStatus = 'reviewed';
+    await order.save();
 
     return res.status(201).json({ success: true, review })
   } catch (err) {
@@ -88,8 +143,47 @@ const review = async (req, res) => {
   }
 }
 
+const verifyReview = async (req, res) => {
+  try {
+    const review = await Review.findById(req.params.id)
+
+    if (!review) {
+      return res.json({ success: false })
+    }
+
+    const localHash = ethers.keccak256(
+      ethers.toUtf8Bytes(
+        `${review.orderID.toString()}-${review.user.toString()}-${review.content}`
+      )
+    )
+
+    const chainData = await contract.getReviewByOrder(
+      review.orderID.toString()
+    )
+
+    const chainHash = chainData[1]
+
+    console.log('localHash:', localHash)
+    console.log('chainHash:', chainHash)
+
+    const verified =
+      localHash.toLowerCase() === chainHash.toLowerCase()
+
+    res.json({
+      success: verified,
+      localHash,
+      chainHash
+    })
+
+  } catch (err) {
+    console.error('[verifyReview]', err)
+    res.json({ success: false })
+  }
+}
+
 module.exports = {
   detail,
   buy,
-  review
+  review,
+  verifyReview
 }

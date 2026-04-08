@@ -199,7 +199,7 @@ contract ReviewRegistry {
         }
 
         bytes32 computedHash = keccak256(
-            abi.encode(reviewContent, orderId, userId)
+            abi.encodePacked(orderId, "-", userId, "-", reviewContent)
         );
 
         return (

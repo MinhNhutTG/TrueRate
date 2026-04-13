@@ -17,41 +17,7 @@ block content
         //- Alert lỗi (dùng chung cho cả 2 form)
         #loginAlert.alert.alert-danger.rounded-3.py-2.px-3.fs-7.d-none(role="alert")
 
-        //- Form email/password
-        form#loginForm.vstack.gap-4
-
-          //- Email
-          div
-            .d-flex.justify-content-start.align-items-center.mb-2
-              label.form-label.fw-bold.text-secondary.opacity-75.text-uppercase.tracking-widest.mb-0(for="email") Email
-            input#email.form-control.border-0.bg-surface-container-high.rounded-3.px-4.text-dark.focus-ring-primary.shadow-none(
-              type="email"
-              name="email"
-              placeholder="Nhập email của bạn"
-              required
-            )
-
-          //- Password
-          div
-            .d-flex.justify-content-between.align-items-center.mb-2
-              label.form-label.fw-bold.text-secondary.opacity-75.text-uppercase.tracking-widest.mb-0(for="password") Mật khẩu
-              a.fs-9.fw-bold.text-primary.text-decoration-none(href="#") Quên mật khẩu?
-            input#password.form-control.border-0.bg-surface-container-high.rounded-3.px-4.text-dark.focus-ring-primary.shadow-none(
-              type="password"
-              name="password"
-              placeholder="••••••••"
-              required
-            )
-
-          //- Submit email
-          button#submitBtn.btn.btn-primary.btn-lg.w-100.py-3.rounded-pill.fw-bold.shadow-md.mt-2(type="submit")
-            span#submitText Đăng nhập
-
-        //- Divider
-        .d-flex.align-items-center.gap-3.my-4
-          hr.flex-grow-1.opacity-25.m-0
-          span.text-secondary.opacity-50.fs-8.fw-medium hoặc
-          hr.flex-grow-1.opacity-25.m-0
+        
 
         //- Nút MetaMask
         button#btnWallet.btn.btn-lg.w-100.py-3.rounded-pill.fw-bold.d-flex.align-items-center.justify-content-center.gap-2(
@@ -70,11 +36,7 @@ block content
             polygon(points="177.5,230.9 211.8,247.4 207.3,208.1" fill="#E4761B" stroke="#E4761B" stroke-linecap="round" stroke-linejoin="round")
           span#walletText Đăng nhập bằng MetaMask
 
-        //- Signup link
-        .mt-4.text-center
-          p.text-secondary.opacity-75.fs-7.mb-0
-            | Chưa có tài khoản?&nbsp;
-            a.text-primary.fw-bold.text-decoration-none(href="/register") Đăng ký ngay
+     
 
         //- Trust badge
         .mt-4.d-flex.align-items-center.justify-content-center.gap-2.text-secondary.opacity-50
